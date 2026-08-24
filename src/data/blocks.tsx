@@ -84,6 +84,18 @@ initializeVariableColors(variableDefinitions);
  * check your .env file and set VITE_SHOW_EXAMPLES=false.
  */
 
+import { trigOpeningBlocks } from "./sections/trigOpening";
+import { trigUnitCircleBlocks } from "./sections/trigUnitCircle";
+import { trigQuarterTurnBlocks } from "./sections/trigQuarterTurn";
+import { trigSquaresBlocks } from "./sections/trigSquares";
+import { trigSteepnessBlocks } from "./sections/trigSteepness";
+import { trigWrapUpBlocks } from "./sections/trigWrapUp";
+
 export const blocks: ReactElement[] = [
-    // Start adding your blocks here!
+    ...trigOpeningBlocks,
+    ...trigUnitCircleBlocks,
+    ...trigQuarterTurnBlocks,
+    ...trigSquaresBlocks,
+    ...trigSteepnessBlocks,
+    ...trigWrapUpBlocks,
 ];

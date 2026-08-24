@@ -81,6 +81,211 @@ export interface VariableDefinition {
  *    { defaultValue: { x: 5, y: 10 }, type: 'object', schema: '{ x: number, y: number }' }
  */
 export const variableDefinitions: Record<string, VariableDefinition> = {
+
+    // =====================================================
+    // SHARED TERM COLOURS (prose <-> figure <-> formula)
+    // =====================================================
+    cosineTerm: {
+        defaultValue: 'cos',
+        type: 'text',
+        label: 'Cosine term colour',
+        description: 'Colour identity for every cosine / horizontal-run element in the lesson',
+        color: '#62D0AD',
+    },
+    sineTerm: {
+        defaultValue: 'sin',
+        type: 'text',
+        label: 'Sine term colour',
+        description: 'Colour identity for every sine / vertical-rise element in the lesson',
+        color: '#8E90F5',
+    },
+
+    // =====================================================
+    // SECTION — One Arm, Two Measurements
+    // =====================================================
+    craneAngle: {
+        defaultValue: 35,
+        type: 'number',
+        label: 'Crane arm angle',
+        description: 'Angle of the unit-length crane arm measured from the positive x-axis',
+        unit: '\u00b0',
+        min: 0,
+        max: 360,
+        step: 1,
+        color: '#334155',
+    },
+    craneSweeping: {
+        defaultValue: false,
+        type: 'boolean',
+        label: 'Crane sweep playing',
+        description: 'Whether the crane arm sweeps around automatically',
+    },
+    craneHighlight: {
+        defaultValue: '',
+        type: 'text',
+        label: 'Crane figure highlight',
+        description: "Which part of the crane figure is highlighted ('' | 'run' | 'rise')",
+        color: '#62D0AD',
+        bgColor: 'rgba(98, 208, 173, 0.2)',
+    },
+    craneExplored: {
+        defaultValue: false,
+        type: 'boolean',
+        label: 'Crane figure explored',
+        description: 'True once the student has dragged the crane tip at least once',
+    },
+    answerCraneCosine: {
+        defaultValue: '',
+        type: 'text',
+        label: 'Cosine reading answer',
+        description: 'Student answer: cosine of the angle whose tip is at (0.64, 0.77)',
+        placeholder: '???',
+        correctAnswer: ['0.64', '.64'],
+        color: '#3B82F6',
+    },
+    answerCraneLimit: {
+        defaultValue: '',
+        type: 'select',
+        label: 'Why sine never passes 1',
+        description: 'Student answer: reason sine can never be larger than 1',
+        placeholder: '???',
+        options: ['the arm is only 1 unit long', 'the angle stays below 90 degrees', 'sine is always positive'],
+        correctAnswer: 'the arm is only 1 unit long',
+        color: '#D81B60',
+    },
+
+    // =====================================================
+    // SECTION — Past the Quarter Turn
+    // =====================================================
+    turnAngle: {
+        defaultValue: 140,
+        type: 'number',
+        label: 'Swung arm angle',
+        description: 'Angle of the crane arm in the prediction figure',
+        unit: '\u00b0',
+        min: 0,
+        max: 360,
+        step: 1,
+        color: '#334155',
+    },
+    turnGuess: {
+        defaultValue: 0,
+        type: 'number',
+        label: 'Your predicted cosine',
+        description: 'Student prediction for cos 140 degrees, dragged on the number line',
+        min: -1,
+        max: 1,
+        step: 0.05,
+        color: '#62D0AD',
+    },
+    turnRevealed: {
+        defaultValue: false,
+        type: 'boolean',
+        label: 'Prediction revealed',
+        description: 'True once the student has locked in a prediction and revealed the true value',
+    },
+    turnHighlight: {
+        defaultValue: '',
+        type: 'text',
+        label: 'Quarter turn figure highlight',
+        description: "Which part of the prediction figure is highlighted ('' | 'guess' | 'run')",
+        color: '#62D0AD',
+        bgColor: 'rgba(98, 208, 173, 0.2)',
+    },
+    answerTurnCosSign: {
+        defaultValue: '',
+        type: 'select',
+        label: 'Sign of cosine at 200 degrees',
+        description: 'Student answer: is cos 200 degrees positive or negative',
+        placeholder: '???',
+        options: ['positive', 'negative', 'zero'],
+        correctAnswer: 'negative',
+        color: '#D81B60',
+    },
+    answerTurnSinSign: {
+        defaultValue: '',
+        type: 'select',
+        label: 'Sign of sine at 200 degrees',
+        description: 'Student answer: is sin 200 degrees positive or negative',
+        placeholder: '???',
+        options: ['positive', 'negative', 'zero'],
+        correctAnswer: 'negative',
+        color: '#D81B60',
+    },
+
+    // =====================================================
+    // SECTION — Why the Squares Add to One
+    // =====================================================
+    identityAngle: {
+        defaultValue: 32,
+        type: 'number',
+        label: 'Identity angle',
+        description: 'Angle shared by the squares figure and the area bar',
+        unit: '\u00b0',
+        min: 5,
+        max: 85,
+        step: 1,
+        color: '#334155',
+    },
+    identityHighlight: {
+        defaultValue: '',
+        type: 'text',
+        label: 'Identity pair highlight',
+        description: "Which area is highlighted across both linked views ('' | 'cosArea' | 'sinArea')",
+        color: '#62D0AD',
+        bgColor: 'rgba(98, 208, 173, 0.2)',
+    },
+    answerSquareMeaning: {
+        defaultValue: '',
+        type: 'select',
+        label: 'Meaning of sine squared',
+        description: 'Student answer: what sin squared theta actually means',
+        placeholder: '???',
+        options: ['(sin \u03b8) \u00d7 (sin \u03b8)', 'sin(\u03b8 \u00d7 \u03b8)', '2 \u00d7 sin \u03b8'],
+        correctAnswer: '(sin \u03b8) \u00d7 (sin \u03b8)',
+        color: '#D81B60',
+    },
+    answerCosSquared: {
+        defaultValue: '',
+        type: 'text',
+        label: 'Cosine squared from sine',
+        description: 'Student answer: cos squared theta when sin theta is 0.6',
+        placeholder: '???',
+        correctAnswer: ['0.64', '.64'],
+        color: '#3B82F6',
+    },
+
+    // =====================================================
+    // SECTION — The Steepness of the Arm
+    // =====================================================
+    rampAngle: {
+        defaultValue: 30,
+        type: 'number',
+        label: 'Ramp angle',
+        description: 'Angle of the arm in the steepness figure',
+        unit: '\u00b0',
+        min: 5,
+        max: 63,
+        step: 1,
+        color: '#334155',
+    },
+    rampHighlight: {
+        defaultValue: '',
+        type: 'text',
+        label: 'Ramp figure highlight',
+        description: "Which part of the steepness figure is highlighted ('' | 'rise' | 'run' | 'tan')",
+        color: '#8E90F5',
+        bgColor: 'rgba(142, 144, 245, 0.2)',
+    },
+    answerTanValue: {
+        defaultValue: '',
+        type: 'text',
+        label: 'Tangent from sine and cosine',
+        description: 'Student answer: tan theta when sin theta is 0.6 and cos theta is 0.8',
+        placeholder: '???',
+        correctAnswer: ['0.75', '.75', '3/4'],
+        color: '#3B82F6',
+    },
     // ========================================
     // ADD YOUR VARIABLES HERE
     // ========================================
