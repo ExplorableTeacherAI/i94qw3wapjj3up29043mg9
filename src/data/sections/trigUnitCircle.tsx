@@ -32,6 +32,7 @@ import {
     spotColorPropsFromDefinition,
 } from "../variables";
 import { COS_COLOR, EASE_150, Halo, INK, INK_QUIET, INK_STRUCTURE, SIN_COLOR, formatAngle, formatUnit, svgPointFromEvent, toRadians } from "./trigShared";
+import { FigureValueInputs, angleFromCosine, angleFromSine, roundTenth, wrapDegrees } from "./trigValueInputs";
 
 // ── View geometry (24px+ padding, nothing clipped at any angle) ──────────────
 
@@ -55,13 +56,13 @@ function CraneDrawing() {
     const svgRef = useRef<SVGSVGElement>(null);
     const handleScale = useSpring(dragging || hovered ? 1.15 : 1, { stiffness: 400, damping: 26 });
 
-    useRafLoop((_dt, elapsed) => setVar("craneAngle", Math.round((elapsed * 40) % 360)), {
+    useRafLoop((_dt, elapsed) => setVar("craneAngle", roundTenth((elapsed * 40) % 360)), {
         paused: !sweeping || dragging,
     });
 
     // Any real change to the angle counts as exploring, however it was made.
     React.useEffect(() => {
-        if (!explored && Math.round(angle) !== DEFAULT_ANGLE) setVar("craneExplored", true);
+        if (!explored && Math.abs(angle - DEFAULT_ANGLE) > 0.05) setVar("craneExplored", true);
     }, [angle, explored, setVar]);
 
     const dim = (id: string) => (highlight && highlight !== id ? 0.35 : 1);
@@ -81,7 +82,7 @@ function CraneDrawing() {
         if (!draggingRef.current) return;
         const point: Vec2 = svgPointFromEvent(event, svgRef.current, VIEW_WIDTH, VIEW_HEIGHT);
         const degrees = (Math.atan2(CENTER_Y - point.y, point.x - CENTER_X) * 180) / Math.PI;
-        setVar("craneAngle", Math.round((degrees + 360) % 360));
+        setVar("craneAngle", roundTenth(wrapDegrees(degrees)));
         setVar("craneExplored", true);
     };
 
@@ -188,6 +189,40 @@ function CraneDrawing() {
     );
 }
 
+function CraneValueInputs() {
+    const setVar = useSetVar();
+    const angle = useVar<number>("craneAngle", DEFAULT_ANGLE);
+    const radians = toRadians(angle);
+
+    return (
+        <FigureValueInputs
+            fields={[
+                {
+                    id: "crane-angle",
+                    label: "angle",
+                    color: INK,
+                    display: formatAngle(angle),
+                    onCommit: (value) => setVar("craneAngle", wrapDegrees(roundTenth(value))),
+                },
+                {
+                    id: "crane-cos",
+                    label: "cos",
+                    color: COS_COLOR,
+                    display: formatUnit(Math.cos(radians)),
+                    onCommit: (value) => setVar("craneAngle", angleFromCosine(value, angle)),
+                },
+                {
+                    id: "crane-sin",
+                    label: "sin",
+                    color: SIN_COLOR,
+                    display: formatUnit(Math.sin(radians)),
+                    onCommit: (value) => setVar("craneAngle", angleFromSine(value, angle)),
+                },
+            ]}
+        />
+    );
+}
+
 function CraneFigure() {
     const setVar = useSetVar();
     return (
@@ -200,9 +235,10 @@ function CraneFigure() {
                 setVar("craneSweeping", false);
                 setVar("craneHighlight", "");
             }}
-            caption="Drag the dark tip around the circle. The teal bar is how far across the arm reaches, the indigo bar is how high it climbs."
+            caption="Drag the dark tip around the circle, or type an exact angle, cosine or sine into the boxes below. The teal bar is how far across the arm reaches, the indigo bar is how high it climbs."
         >
             <CraneDrawing />
+            <CraneValueInputs />
             <div className="px-6 pb-5">
                 <FigureSlider
                     varName="craneAngle"

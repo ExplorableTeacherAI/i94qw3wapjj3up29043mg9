@@ -32,6 +32,7 @@ import {
     numberPropsFromDefinition,
 } from "../variables";
 import { COS_COLOR, EASE_150, Halo, INK, INK_QUIET, INK_STRUCTURE, SIN_COLOR, formatAngle, formatUnit, svgPointFromEvent, toRadians } from "./trigShared";
+import { FigureValueInputs, roundTenth } from "./trigValueInputs";
 
 // ── Shared view scale — the visible tie between the two figures ──────────────
 
@@ -98,7 +99,7 @@ function SquaresDrawing() {
         if (!draggingRef.current) return;
         const point: Vec2 = svgPointFromEvent(event, svgRef.current, VIEW_WIDTH, VIEW_HEIGHT);
         const degrees = (Math.atan2(CENTER_Y - point.y, point.x - CENTER_X) * 180) / Math.PI;
-        setVar("identityAngle", Math.round(clamp(degrees, MIN_ANGLE, MAX_ANGLE)));
+        setVar("identityAngle", roundTenth(clamp(degrees, MIN_ANGLE, MAX_ANGLE)));
     };
 
     const arcPath =
@@ -236,7 +237,7 @@ function AreaBarDrawing() {
         const point: Vec2 = svgPointFromEvent(event, svgRef.current, VIEW_WIDTH, VIEW_HEIGHT);
         const fraction = clamp((point.x - BAR_X) / BAR_WIDTH, 0, 1);
         const degrees = (Math.acos(Math.sqrt(fraction)) * 180) / Math.PI;
-        setVar("identityAngle", Math.round(clamp(degrees, MIN_ANGLE, MAX_ANGLE)));
+        setVar("identityAngle", roundTenth(clamp(degrees, MIN_ANGLE, MAX_ANGLE)));
     };
 
     const cosSide = cosine * UNIT;
@@ -338,6 +339,47 @@ function AreaBarDrawing() {
     );
 }
 
+/** Angle boxes for a first-quadrant figure: type the angle, the cosine or the sine. */
+function QuadrantOneValueInputs({ varName, angle }: { varName: string; angle: number }) {
+    const setVar = useSetVar();
+    const radians = toRadians(angle);
+    const setAngle = (degrees: number) =>
+        setVar(varName, roundTenth(clamp(degrees, MIN_ANGLE, MAX_ANGLE)));
+
+    return (
+        <FigureValueInputs
+            fields={[
+                {
+                    id: `${varName}-angle`,
+                    label: "angle",
+                    color: INK,
+                    display: formatAngle(angle),
+                    onCommit: (value) => setAngle(value),
+                },
+                {
+                    id: `${varName}-cos`,
+                    label: "cos",
+                    color: COS_COLOR,
+                    display: formatUnit(Math.cos(radians)),
+                    onCommit: (value) => setAngle((Math.acos(clamp(value, 0, 1)) * 180) / Math.PI),
+                },
+                {
+                    id: `${varName}-sin`,
+                    label: "sin",
+                    color: SIN_COLOR,
+                    display: formatUnit(Math.sin(radians)),
+                    onCommit: (value) => setAngle((Math.asin(clamp(value, 0, 1)) * 180) / Math.PI),
+                },
+            ]}
+        />
+    );
+}
+
+function IdentityValueInputs() {
+    const angle = useVar<number>("identityAngle", DEFAULT_ANGLE);
+    return <QuadrantOneValueInputs varName="identityAngle" angle={angle} />;
+}
+
 function SquaresFigure() {
     const setVar = useSetVar();
     return (
@@ -374,9 +416,10 @@ function AreaBarFigure() {
                 setVar("identityAngle", DEFAULT_ANGLE);
                 setVar("identityHighlight", "");
             }}
-            caption="The same two areas laid end to end. They always fill the bar exactly. Drag the split and the triangle follows."
+            caption="The same two areas laid end to end. They always fill the bar exactly. Drag the split, or type an exact angle, cosine or sine."
         >
             <AreaBarDrawing />
+            <IdentityValueInputs />
             <div className="px-6 pb-5">
                 <FigureSlider
                     varName="identityAngle"

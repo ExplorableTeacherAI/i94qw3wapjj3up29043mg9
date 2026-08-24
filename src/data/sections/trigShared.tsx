@@ -26,7 +26,7 @@ export const Halo = ({ active, children }: { active: boolean; children: React.Re
 export const toRadians = (degrees: number) => (degrees * Math.PI) / 180;
 
 /** One formatter per quantity, used in figures, sliders and prose alike. */
-export const formatAngle = (degrees: number) => `${Math.round(degrees)}°`;
+export const formatAngle = (degrees: number) => `${degrees.toFixed(1)}°`;
 
 export const formatUnit = (value: number) => {
     const rounded = Math.abs(value) < 0.005 ? 0 : value;

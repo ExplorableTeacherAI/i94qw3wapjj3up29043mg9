@@ -28,6 +28,7 @@ import {
     numberPropsFromDefinition,
 } from "../variables";
 import { COS_COLOR, EASE_150, Halo, INK, INK_QUIET, INK_STRUCTURE, SIN_COLOR, formatAngle, formatUnit, svgPointFromEvent, toRadians } from "./trigShared";
+import { FigureValueInputs, angleFromCosine, angleFromSine, roundTenth, wrapDegrees } from "./trigValueInputs";
 
 const VIEW_WIDTH = 480;
 const VIEW_HEIGHT = 370;
@@ -80,7 +81,7 @@ function QuarterTurnDrawing() {
         if (!armRef.current) return;
         const point: Vec2 = svgPointFromEvent(event, svgRef.current, VIEW_WIDTH, VIEW_HEIGHT);
         const degrees = (Math.atan2(CENTER_Y - point.y, point.x - CENTER_X) * 180) / Math.PI;
-        setVar("turnAngle", Math.round((degrees + 360) % 360));
+        setVar("turnAngle", roundTenth(wrapDegrees(degrees)));
     };
 
     const arcRadius = 32;
@@ -262,11 +263,45 @@ function QuarterTurnDrawing() {
     );
 }
 
+function QuarterTurnValueInputs() {
+    const setVar = useSetVar();
+    const angle = useVar<number>("turnAngle", DEFAULT_ANGLE);
+    const radians = toRadians(angle);
+
+    return (
+        <FigureValueInputs
+            fields={[
+                {
+                    id: "turn-angle",
+                    label: "angle",
+                    color: INK,
+                    display: formatAngle(angle),
+                    onCommit: (value) => setVar("turnAngle", wrapDegrees(roundTenth(value))),
+                },
+                {
+                    id: "turn-cos",
+                    label: "cos",
+                    color: COS_COLOR,
+                    display: formatUnit(Math.cos(radians)),
+                    onCommit: (value) => setVar("turnAngle", angleFromCosine(value, angle)),
+                },
+                {
+                    id: "turn-sin",
+                    label: "sin",
+                    color: SIN_COLOR,
+                    display: formatUnit(Math.sin(radians)),
+                    onCommit: (value) => setVar("turnAngle", angleFromSine(value, angle)),
+                },
+            ]}
+        />
+    );
+}
+
 function QuarterTurnFigure() {
     const setVar = useSetVar();
     const revealed = useVar<boolean>("turnRevealed", false);
     const angle = useVar<number>("turnAngle", DEFAULT_ANGLE);
-    const hintStep = !revealed ? 0 : Math.round(angle) !== DEFAULT_ANGLE ? 2 : 1;
+    const hintStep = !revealed ? 0 : Math.abs(angle - DEFAULT_ANGLE) > 0.5 ? 2 : 1;
 
     return (
         <Figure
@@ -279,11 +314,12 @@ function QuarterTurnFigure() {
             }}
             caption={
                 revealed
-                    ? "The teal dot is the true cosine, dropped straight down from the arm. The hollow ring is where you predicted. Drag the arm tip anywhere now."
+                    ? "The teal dot is the true cosine, dropped straight down from the arm. The hollow ring is where you predicted. Drag the arm tip anywhere now, or type an exact value."
                     : "Drag the teal marker along the number line to where you think cos 140° lands, then lock it in."
             }
         >
             <QuarterTurnDrawing />
+            {revealed && <QuarterTurnValueInputs />}
             <div className="px-6 pb-5">
                 {revealed ? (
                     <FigureSlider

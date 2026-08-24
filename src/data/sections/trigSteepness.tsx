@@ -28,6 +28,7 @@ import {
     numberPropsFromDefinition,
 } from "../variables";
 import { COS_COLOR, EASE_150, Halo, INK, INK_QUIET, INK_STRUCTURE, SIN_COLOR, formatAngle, formatUnit, svgPointFromEvent, toRadians } from "./trigShared";
+import { FigureValueInputs, roundTenth } from "./trigValueInputs";
 
 const VIEW_WIDTH = 440;
 const VIEW_HEIGHT = 300;
@@ -71,7 +72,7 @@ function SteepnessDrawing() {
         const point: Vec2 = svgPointFromEvent(event, svgRef.current, VIEW_WIDTH, VIEW_HEIGHT);
         const rise = (ORIGIN_Y - point.y) / UNIT;
         const degrees = (Math.atan(Math.max(rise, 0)) * 180) / Math.PI;
-        setVar("rampAngle", Math.round(clamp(degrees, MIN_ANGLE, MAX_ANGLE)));
+        setVar("rampAngle", roundTenth(clamp(degrees, MIN_ANGLE, MAX_ANGLE)));
     };
 
     const arcPath = `M ${ORIGIN_X + 32} ${ORIGIN_Y} A 32 32 0 0 0 ${ORIGIN_X + Math.cos(radians) * 32} ${ORIGIN_Y - Math.sin(radians) * 32}`;
@@ -169,6 +170,49 @@ function SteepnessDrawing() {
     );
 }
 
+function SteepnessValueInputs() {
+    const setVar = useSetVar();
+    const angle = useVar<number>("rampAngle", DEFAULT_ANGLE);
+    const radians = toRadians(angle);
+    const setAngle = (degrees: number) =>
+        setVar("rampAngle", roundTenth(clamp(degrees, MIN_ANGLE, MAX_ANGLE)));
+
+    return (
+        <FigureValueInputs
+            fields={[
+                {
+                    id: "ramp-angle",
+                    label: "angle",
+                    color: INK,
+                    display: formatAngle(angle),
+                    onCommit: (value) => setAngle(value),
+                },
+                {
+                    id: "ramp-cos",
+                    label: "cos",
+                    color: COS_COLOR,
+                    display: formatUnit(Math.cos(radians)),
+                    onCommit: (value) => setAngle((Math.acos(clamp(value, 0, 1)) * 180) / Math.PI),
+                },
+                {
+                    id: "ramp-sin",
+                    label: "sin",
+                    color: SIN_COLOR,
+                    display: formatUnit(Math.sin(radians)),
+                    onCommit: (value) => setAngle((Math.asin(clamp(value, 0, 1)) * 180) / Math.PI),
+                },
+                {
+                    id: "ramp-tan",
+                    label: "tan",
+                    color: SIN_COLOR,
+                    display: formatUnit(Math.tan(radians)),
+                    onCommit: (value) => setAngle((Math.atan(Math.max(value, 0)) * 180) / Math.PI),
+                },
+            ]}
+        />
+    );
+}
+
 function SteepnessFigure() {
     const setVar = useSetVar();
     return (
@@ -178,9 +222,10 @@ function SteepnessFigure() {
                 setVar("rampAngle", DEFAULT_ANGLE);
                 setVar("rampHighlight", "");
             }}
-            caption="Drag the indigo marker up and down the tower. You are setting the steepness, and the ramp swings to match it."
+            caption="Drag the indigo marker up and down the tower, or type an exact value. You are setting the steepness, and the ramp swings to match it."
         >
             <SteepnessDrawing />
+            <SteepnessValueInputs />
             <div className="px-6 pb-5">
                 <FigureSlider
                     varName="rampAngle"
