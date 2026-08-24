@@ -389,9 +389,18 @@ function SquaresFigure() {
                 setVar("identityAngle", DEFAULT_ANGLE);
                 setVar("identityHighlight", "");
             }}
-            caption="A real square on each leg. Drag the dark tip: one square grows exactly as fast as the other shrinks."
+            caption="A real square on each leg. Drag the dark tip, drag the bar, or type an exact value: one square grows exactly as fast as the other shrinks."
         >
             <SquaresDrawing />
+            <IdentityValueInputs />
+            <div className="px-6 pb-5">
+                <FigureSlider
+                    varName="identityAngle"
+                    label="Angle"
+                    {...numberPropsFromDefinition(getVariableInfo("identityAngle"))}
+                    formatValue={formatAngle}
+                />
+            </div>
             <InteractionHintSequence
                 hintKey="identity-squares-drag"
                 steps={[

@@ -263,6 +263,25 @@ function QuarterTurnDrawing() {
     );
 }
 
+function QuarterTurnGuessInput() {
+    const setVar = useSetVar();
+    const guess = useVar<number>("turnGuess", 0);
+    return (
+        <FigureValueInputs
+            fields={[
+                {
+                    id: "turn-guess",
+                    label: "my prediction for cos 140°",
+                    color: COS_COLOR,
+                    display: formatUnit(guess),
+                    onCommit: (value) =>
+                        setVar("turnGuess", Math.round(clamp(value, -1, 1) * 20) / 20),
+                },
+            ]}
+        />
+    );
+}
+
 function QuarterTurnValueInputs() {
     const setVar = useSetVar();
     const angle = useVar<number>("turnAngle", DEFAULT_ANGLE);
@@ -315,11 +334,11 @@ function QuarterTurnFigure() {
             caption={
                 revealed
                     ? "The teal dot is the true cosine, dropped straight down from the arm. The hollow ring is where you predicted. Drag the arm tip anywhere now, or type an exact value."
-                    : "Drag the teal marker along the number line to where you think cos 140° lands, then lock it in."
+                    : "Drag the teal marker along the number line, drag the bar, or type your exact prediction for cos 140°, then lock it in."
             }
         >
             <QuarterTurnDrawing />
-            {revealed && <QuarterTurnValueInputs />}
+            {revealed ? <QuarterTurnValueInputs /> : <QuarterTurnGuessInput />}
             <div className="px-6 pb-5">
                 {revealed ? (
                     <FigureSlider
@@ -329,9 +348,17 @@ function QuarterTurnFigure() {
                         formatValue={formatAngle}
                     />
                 ) : (
-                    <Button variant="outline" size="sm" onClick={() => setVar("turnRevealed", true)}>
-                        Lock in my prediction
-                    </Button>
+                    <div className="flex flex-col gap-4">
+                        <FigureSlider
+                            varName="turnGuess"
+                            label="My prediction"
+                            {...numberPropsFromDefinition(getVariableInfo("turnGuess"))}
+                            formatValue={formatUnit}
+                        />
+                        <Button variant="outline" size="sm" className="self-start" onClick={() => setVar("turnRevealed", true)}>
+                            Lock in my prediction
+                        </Button>
+                    </div>
                 )}
             </div>
             <InteractionHintSequence
