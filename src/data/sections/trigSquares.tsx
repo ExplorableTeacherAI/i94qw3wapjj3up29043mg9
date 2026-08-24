@@ -464,13 +464,14 @@ export const trigSquaresBlocks: ReactElement[] = [
     <StackLayout key="layout-identity-setup" maxWidth="xl">
         <Block id="identity-setup" padding="sm">
             <EditableParagraph id="para-identity-setup" blockId="identity-setup">
-                Build a real square on each leg of the triangle. With the arm at{" "}
+                • A real square is built on each leg of the triangle, with the arm at{" "}
                 <InlineScrubbleNumber
                     varName="identityAngle"
                     {...numberPropsFromDefinition(getVariableInfo("identityAngle"))}
                     formatValue={formatAngle}
                 />
-                , drag the dark tip and watch the{" "}
+                .
+                <br />• Drag the dark tip and the{" "}
                 <InlineLinkedHighlight
                     varName="identityHighlight"
                     highlightId="cosArea"
@@ -478,7 +479,7 @@ export const trigSquaresBlocks: ReactElement[] = [
                 >
                     teal square
                 </InlineLinkedHighlight>{" "}
-                shrink exactly as fast as the{" "}
+                shrinks exactly as fast as the{" "}
                 <InlineLinkedHighlight
                     varName="identityHighlight"
                     highlightId="sinArea"
@@ -513,11 +514,11 @@ export const trigSquaresBlocks: ReactElement[] = [
     <StackLayout key="layout-identity-insight" maxWidth="xl">
         <Block id="identity-insight" padding="sm">
             <EditableParagraph id="para-identity-insight" blockId="identity-insight">
-                The two areas always total exactly 1, and that is simply Pythagoras:
-                leg squared plus leg squared equals hypotenuse squared, and here the
-                hypotenuse is 1. Notice that each square is a genuine square. Its side
-                is the sine, so its area is sine times sine, and that is all sin²θ has
-                ever meant.
+                • The two areas always total exactly 1.
+                <br />• That is simply Pythagoras: leg squared plus leg squared equals
+                hypotenuse squared, and here the hypotenuse is 1.
+                <br />• Each square is a genuine square. Its side is the sine, so its
+                area is sine times sine, and that is all sin²θ has ever meant.
             </EditableParagraph>
         </Block>
     </StackLayout>,

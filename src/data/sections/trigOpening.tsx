@@ -22,10 +22,11 @@ export const trigOpeningBlocks: ReactElement[] = [
     <StackLayout key="layout-opening-hook" maxWidth="xl">
         <Block id="opening-hook" padding="sm">
             <EditableParagraph id="para-opening-hook" blockId="opening-hook">
-                Build a Lego Technic crane and swing its arm slowly around. The tip
-                traces a perfect circle, and at every instant it is some distance
-                across and some distance up. Those two distances already have names
-                you know: cosine and sine.
+                • Build a Lego Technic crane and swing its arm slowly around.
+                <br />• The tip traces a perfect circle, and at every instant it is
+                some distance across and some distance up.
+                <br />• Those two distances already have names you know: cosine and
+                sine.
             </EditableParagraph>
         </Block>
     </StackLayout>,
@@ -33,14 +34,13 @@ export const trigOpeningBlocks: ReactElement[] = [
     <StackLayout key="layout-opening-promise" maxWidth="xl">
         <Block id="opening-promise" padding="sm">
             <EditableParagraph id="para-opening-promise" blockId="opening-promise">
-                Here we make the arm exactly one unit long and pin its base at the
-                origin. Out of that single picture fall two rules you will use for
-                years:{" "}
+                • Here the arm is exactly one unit long, with its base pinned at the
+                origin.
+                <br />• Two rules fall out of that one picture:{" "}
                 <InlineFormula latex="\sin^2\theta + \cos^2\theta = 1" colorMap={{}} /> and{" "}
                 <InlineFormula latex="\tan\theta = \dfrac{\sin\theta}{\cos\theta}" colorMap={{}} />.
-                Everything you need is already in your toolkit: sine, cosine and
-                tangent in a right-angled triangle, Pythagoras, and plotting points
-                with negative coordinates.
+                <br />• You already have the toolkit: SOH-CAH-TOA, Pythagoras, and
+                plotting points with negative coordinates.
             </EditableParagraph>
         </Block>
     </StackLayout>,

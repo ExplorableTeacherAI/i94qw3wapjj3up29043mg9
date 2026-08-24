@@ -395,8 +395,9 @@ export const trigQuarterTurnBlocks: ReactElement[] = [
     <StackLayout key="layout-quarter-turn-setup" maxWidth="xl">
         <Block id="quarter-turn-setup" padding="sm">
             <EditableParagraph id="para-quarter-turn-setup" blockId="quarter-turn-setup">
-                Swing the arm past the quarter turn and the tip ends up behind the
-                base. Before anyone shows you the answer, drag the{" "}
+                • Swing the arm past the quarter turn and the tip ends up behind the
+                base.
+                <br />• Before anyone shows you the answer, drag the{" "}
                 <InlineLinkedHighlight
                     varName="turnHighlight"
                     highlightId="guess"
@@ -404,7 +405,8 @@ export const trigQuarterTurnBlocks: ReactElement[] = [
                 >
                     teal marker
                 </InlineLinkedHighlight>{" "}
-                along the number line to where you think cos 140° lands, then lock it in.
+                to where you think cos 140° lands.
+                <br />• Lock in your prediction, then look.
             </EditableParagraph>
         </Block>
     </StackLayout>,
@@ -418,7 +420,7 @@ export const trigQuarterTurnBlocks: ReactElement[] = [
     <StackLayout key="layout-quarter-turn-insight" maxWidth="xl">
         <Block id="quarter-turn-insight" padding="sm">
             <EditableParagraph id="para-quarter-turn-insight" blockId="quarter-turn-insight">
-                Past 90° the tip reaches to the left of the base, so the{" "}
+                • Past 90° the tip reaches to the left of the base, so the{" "}
                 <InlineLinkedHighlight
                     varName="turnHighlight"
                     highlightId="run"
@@ -426,9 +428,10 @@ export const trigQuarterTurnBlocks: ReactElement[] = [
                 >
                     across value
                 </InlineLinkedHighlight>{" "}
-                drops below zero. Cosine did not stop working at 90°, it simply
-                changed sign. Keep swinging and watch which quarter of the circle
-                flips which measurement.
+                drops below zero.
+                <br />• Cosine did not stop working at 90°, it simply changed sign.
+                <br />• Keep swinging and watch which quarter of the circle flips which
+                measurement.
             </EditableParagraph>
         </Block>
     </StackLayout>,

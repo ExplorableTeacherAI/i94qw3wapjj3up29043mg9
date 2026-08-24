@@ -261,13 +261,14 @@ export const trigSteepnessBlocks: ReactElement[] = [
     <StackLayout key="layout-steepness-setup" maxWidth="xl">
         <Block id="steepness-setup" padding="sm">
             <EditableParagraph id="para-steepness-setup" blockId="steepness-setup">
-                Think of the arm as a ramp in the gym, tilted at{" "}
+                • Think of the arm as a ramp in the gym, tilted at{" "}
                 <InlineScrubbleNumber
                     varName="rampAngle"
                     {...numberPropsFromDefinition(getVariableInfo("rampAngle"))}
                     formatValue={formatAngle}
                 />
-                . Its{" "}
+                .
+                <br />• Its{" "}
                 <InlineLinkedHighlight
                     varName="rampHighlight"
                     highlightId="tan"
@@ -275,9 +276,9 @@ export const trigSteepnessBlocks: ReactElement[] = [
                 >
                     steepness
                 </InlineLinkedHighlight>{" "}
-                is rise over run, which is sine divided by cosine. Drag the indigo
-                marker up the tower and the ramp swings to whatever steepness you ask
-                for.
+                is rise over run, which is sine divided by cosine.
+                <br />• Drag the indigo marker up the tower and the ramp swings to
+                whatever steepness you ask for.
             </EditableParagraph>
         </Block>
     </StackLayout>,
@@ -291,10 +292,12 @@ export const trigSteepnessBlocks: ReactElement[] = [
     <StackLayout key="layout-steepness-insight" maxWidth="xl">
         <Block id="steepness-insight" padding="sm">
             <EditableParagraph id="para-steepness-insight" blockId="steepness-insight">
-                Pull the marker high and the ramp creeps toward straight up without
-                ever getting there. The rise on the tower can grow forever while the
-                cosine shrinks toward zero, and dividing by something tiny is exactly
-                what makes the tangent explode.
+                • Pull the marker high and the ramp creeps toward straight up without
+                ever getting there.
+                <br />• The rise on the tower can grow forever while the cosine shrinks
+                toward zero.
+                <br />• Dividing by something tiny is exactly what makes the tangent
+                explode.
             </EditableParagraph>
         </Block>
     </StackLayout>,

@@ -274,14 +274,15 @@ export const trigUnitCircleBlocks: ReactElement[] = [
     <StackLayout key="layout-unit-circle-setup" maxWidth="xl">
         <Block id="unit-circle-setup" padding="sm">
             <EditableParagraph id="para-unit-circle-setup" blockId="unit-circle-setup">
-                Pin the crane's base at the origin and make the arm exactly one unit
-                long. Swing it to{" "}
+                • The crane's base is pinned at the origin and the arm is exactly one
+                unit long, currently at{" "}
                 <InlineScrubbleNumber
                     varName="craneAngle"
                     {...numberPropsFromDefinition(getVariableInfo("craneAngle"))}
                     formatValue={formatAngle}
-                />{" "}
-                by dragging the dark tip, and the{" "}
+                />
+                .
+                <br />• Drag the dark tip and the{" "}
                 <InlineLinkedHighlight
                     varName="craneHighlight"
                     highlightId="run"
@@ -298,7 +299,8 @@ export const trigUnitCircleBlocks: ReactElement[] = [
                 >
                     climb upward
                 </InlineLinkedHighlight>{" "}
-                trade off against each other, and neither ever passes 1.
+                trade off against each other.
+                <br />• Neither of them ever passes 1.
             </EditableParagraph>
         </Block>
     </StackLayout>,
@@ -312,8 +314,7 @@ export const trigUnitCircleBlocks: ReactElement[] = [
     <StackLayout key="layout-unit-circle-insight" maxWidth="xl">
         <Block id="unit-circle-insight" padding="sm">
             <EditableParagraph id="para-unit-circle-insight" blockId="unit-circle-insight">
-                Because the arm is 1 long, SOH-CAH-TOA collapses into something
-                lovely. The{" "}
+                • Because the arm is 1 long, SOH-CAH-TOA collapses: the{" "}
                 <InlineSpotColor varName="cosineTerm" {...spotColorPropsFromDefinition(getVariableInfo("cosineTerm"))}>
                     cosine
                 </InlineSpotColor>{" "}
@@ -321,8 +322,9 @@ export const trigUnitCircleBlocks: ReactElement[] = [
                 <InlineSpotColor varName="sineTerm" {...spotColorPropsFromDefinition(getVariableInfo("sineTerm"))}>
                     sine
                 </InlineSpotColor>{" "}
-                is the climb divided by 1. So the tip is always parked at the point
-                (cos, sin), and the circle becomes a lookup table for every angle.
+                is the climb divided by 1.
+                <br />• So the tip is always parked at the point (cos, sin).
+                <br />• The circle becomes a lookup table for every angle.
             </EditableParagraph>
         </Block>
     </StackLayout>,
