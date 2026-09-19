@@ -16,8 +16,11 @@ import {
     InlineClozeChoice,
     InlineClozeInput,
     InlineFeedback,
+    InlineFormula,
     InlineLinkedHighlight,
     InlineScrubbleNumber,
+    InlineSpotColor,
+    InlineTooltip,
     InteractionHintSequence,
 } from "@/components/atoms";
 import { Figure, FigureSlider } from "@/components/molecules";
@@ -30,8 +33,10 @@ import {
     getVariableInfo,
     linkedHighlightPropsFromDefinition,
     numberPropsFromDefinition,
+    scrubVarsFromDefinitions,
+    spotColorPropsFromDefinition,
 } from "../variables";
-import { COS_COLOR, EASE_150, Halo, INK, INK_QUIET, INK_STRUCTURE, SIN_COLOR, formatAngle, formatUnit, svgPointFromEvent, toRadians } from "./trigShared";
+import { ANGLE_COLOR, COS_COLOR, EASE_150, Halo, INK, INK_QUIET, INK_STRUCTURE, SIN_COLOR, formatAngle, formatUnit, svgPointFromEvent, toRadians } from "./trigShared";
 import { FigureValueInputs, roundTenth } from "./trigValueInputs";
 
 // ── Shared view scale — the visible tie between the two figures ──────────────
@@ -132,8 +137,8 @@ function SquaresDrawing() {
                     strokeWidth="1.5"
                 />
                 <line x1={CENTER_X} y1={CENTER_Y} x2={tipX} y2={tipY} stroke={INK_STRUCTURE} strokeWidth="2" strokeLinecap="round" />
-                <path d={arcPath} fill="none" stroke={INK_STRUCTURE} strokeWidth="2" strokeLinecap="round" />
-                <text x={CENTER_X + 44} y={CENTER_Y - 12} fill={INK} fontSize="12">&#952;</text>
+                <path d={arcPath} fill="none" stroke={ANGLE_COLOR} strokeWidth="2" strokeLinecap="round" />
+                <text x={CENTER_X + 44} y={CENTER_Y - 12} fill={ANGLE_COLOR} fontSize="12">&#952;</text>
             </g>
 
             {/* The square standing on the horizontal leg: side cos, area cos². */}
@@ -352,7 +357,7 @@ function QuadrantOneValueInputs({ varName, angle }: { varName: string; angle: nu
                 {
                     id: `${varName}-angle`,
                     label: "angle",
-                    color: INK,
+                    color: ANGLE_COLOR,
                     display: formatAngle(angle),
                     onCommit: (value) => setAngle(value),
                 },
@@ -505,8 +510,13 @@ export const trigSquaresBlocks: ReactElement[] = [
     <StackLayout key="layout-identity-formula" maxWidth="xl">
         <Block id="identity-formula" padding="lg">
             <FormulaBlock
-                latex="\clr{cosine}{\cos^2\theta} + \clr{sine}{\sin^2\theta} = 1"
-                colorMap={{ cosine: "#62D0AD", sine: "#8E90F5" }}
+                latex="\highlight{cosArea}{\cos^2\theta} + \highlight{sinArea}{\sin^2\theta} = 1 \qquad \clr{angle}{\theta} = \scrub{identityAngle}^\circ"
+                colorMap={{ angle: "#F7B23B" }}
+                variables={scrubVarsFromDefinitions(["identityAngle"])}
+                linkedHighlights={{
+                    cosArea: { varName: "identityHighlight", color: "#62D0AD", bgColor: "rgba(98, 208, 173, 0.2)" },
+                    sinArea: { varName: "identityHighlight", color: "#8E90F5", bgColor: "rgba(142, 144, 245, 0.2)" },
+                }}
             />
         </Block>
     </StackLayout>,
@@ -517,8 +527,17 @@ export const trigSquaresBlocks: ReactElement[] = [
                 • The two areas always total exactly 1.
                 <br />• That is simply Pythagoras: leg squared plus leg squared equals
                 hypotenuse squared, and here the hypotenuse is 1.
-                <br />• Each square is a genuine square. Its side is the sine, so its
-                area is sine times sine, and that is all sin²θ has ever meant.
+                <br />• Each square is a genuine square. Its side is the{" "}
+                <InlineSpotColor id="spot-identity-insight-sine" varName="sineTerm" {...spotColorPropsFromDefinition(getVariableInfo("sineTerm"))}>
+                    sine
+                </InlineSpotColor>
+                , so its area is sine times sine, and that is all{" "}
+                <InlineFormula
+                    id="formula-identity-insight-sine-squared"
+                    latex="\clr{sine}{\sin^2\theta}"
+                    colorMap={{ sine: "#8E90F5" }}
+                />{" "}
+                has ever meant.
             </EditableParagraph>
         </Block>
     </StackLayout>,
@@ -526,7 +545,20 @@ export const trigSquaresBlocks: ReactElement[] = [
     <StackLayout key="layout-identity-question-meaning" maxWidth="xl">
         <Block id="identity-question-meaning" padding="sm">
             <EditableParagraph id="para-identity-question-meaning" blockId="identity-question-meaning">
-                So in that identity, sin²θ is shorthand for{" "}
+                So in that{" "}
+                <InlineTooltip
+                    id="tooltip-identity-question-meaning-identity"
+                    tooltip="An equation that stays true for every value of the variable, here for every angle."
+                >
+                    identity
+                </InlineTooltip>
+                ,{" "}
+                <InlineFormula
+                    id="formula-identity-question-meaning-sine-squared"
+                    latex="\clr{sine}{\sin^2\theta}"
+                    colorMap={{ sine: "#8E90F5" }}
+                />{" "}
+                is shorthand for{" "}
                 <InlineFeedback
                     varName="answerSquareMeaning"
                     correctValue="(sin θ) × (sin θ)"
@@ -551,8 +583,19 @@ export const trigSquaresBlocks: ReactElement[] = [
     <StackLayout key="layout-identity-question-value" maxWidth="xl">
         <Block id="identity-question-value" padding="sm">
             <EditableParagraph id="para-identity-question-value" blockId="identity-question-value">
-                A different angle has sin θ = 0.6. Without touching a calculator,
-                cos²θ must be{" "}
+                A different angle has{" "}
+                <InlineFormula
+                    id="formula-identity-question-value-sine"
+                    latex="\clr{sine}{\sin\theta} = 0.6"
+                    colorMap={{ sine: "#8E90F5" }}
+                />
+                . Without touching a calculator,{" "}
+                <InlineFormula
+                    id="formula-identity-question-value-cosine-squared"
+                    latex="\clr{cosine}{\cos^2\theta}"
+                    colorMap={{ cosine: "#62D0AD" }}
+                />{" "}
+                must be{" "}
                 <InlineFeedback
                     varName="answerCosSquared"
                     correctValue={["0.64", ".64"]}

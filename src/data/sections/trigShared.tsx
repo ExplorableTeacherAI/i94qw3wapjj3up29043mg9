@@ -1,8 +1,8 @@
 /**
  * Shared drawing vocabulary for the trigonometry lesson
  * =====================================================
- * One ink palette, one accent per quantity (cosine teal, sine indigo), one
- * number formatter per quantity — used by every figure in this lesson so the
+ * One ink palette, one accent per quantity (cosine teal, sine indigo, the
+ * angle amber, tangent rose), one number formatter per quantity — used by every figure in this lesson so the
  * same value never appears in two formats or two colours.
  */
 
@@ -14,6 +14,8 @@ export const INK_STRUCTURE = "#64748B";
 export const INK_QUIET = "#CBD5E1";
 export const COS_COLOR = "#62D0AD";
 export const SIN_COLOR = "#8E90F5";
+export const ANGLE_COLOR = "#F7B23B";
+export const TAN_COLOR = "#F8A0CD";
 
 export const EASE_150 = {
     transition: "opacity 150ms ease, stroke-width 150ms ease",

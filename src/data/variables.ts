@@ -99,6 +99,13 @@ export const variableDefinitions: Record<string, VariableDefinition> = {
         description: 'Colour identity for every sine / vertical-rise element in the lesson',
         color: '#8E90F5',
     },
+    tangentTerm: {
+        defaultValue: 'tan',
+        type: 'text',
+        label: 'Tangent term colour',
+        description: 'Colour identity for every tangent / steepness element in the lesson',
+        color: '#F8A0CD',
+    },
 
     // =====================================================
     // SECTION — One Arm, Two Measurements
@@ -112,7 +119,7 @@ export const variableDefinitions: Record<string, VariableDefinition> = {
         min: 0,
         max: 360,
         step: 1,
-        color: '#334155',
+        color: '#F7B23B',
     },
     craneSweeping: {
         defaultValue: false,
@@ -166,7 +173,7 @@ export const variableDefinitions: Record<string, VariableDefinition> = {
         min: 0,
         max: 360,
         step: 1,
-        color: '#334155',
+        color: '#F7B23B',
     },
     turnGuess: {
         defaultValue: 0,
@@ -225,7 +232,7 @@ export const variableDefinitions: Record<string, VariableDefinition> = {
         min: 5,
         max: 85,
         step: 1,
-        color: '#334155',
+        color: '#F7B23B',
     },
     identityHighlight: {
         defaultValue: '',
@@ -267,15 +274,15 @@ export const variableDefinitions: Record<string, VariableDefinition> = {
         min: 5,
         max: 63,
         step: 1,
-        color: '#334155',
+        color: '#F7B23B',
     },
     rampHighlight: {
         defaultValue: '',
         type: 'text',
         label: 'Ramp figure highlight',
         description: "Which part of the steepness figure is highlighted ('' | 'rise' | 'run' | 'tan')",
-        color: '#8E90F5',
-        bgColor: 'rgba(142, 144, 245, 0.2)',
+        color: '#F8A0CD',
+        bgColor: 'rgba(248, 160, 205, 0.2)',
     },
     answerTanValue: {
         defaultValue: '',

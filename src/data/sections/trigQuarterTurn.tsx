@@ -15,7 +15,9 @@ import {
     EditableParagraph,
     InlineClozeChoice,
     InlineFeedback,
+    InlineFormula,
     InlineLinkedHighlight,
+    InlineSpotColor,
     InteractionHintSequence,
 } from "@/components/atoms";
 import { Figure, FigureSlider } from "@/components/molecules";
@@ -26,8 +28,9 @@ import {
     getVariableInfo,
     linkedHighlightPropsFromDefinition,
     numberPropsFromDefinition,
+    spotColorPropsFromDefinition,
 } from "../variables";
-import { COS_COLOR, EASE_150, Halo, INK, INK_QUIET, INK_STRUCTURE, SIN_COLOR, formatAngle, formatUnit, svgPointFromEvent, toRadians } from "./trigShared";
+import { ANGLE_COLOR, COS_COLOR, EASE_150, Halo, INK, INK_QUIET, INK_STRUCTURE, SIN_COLOR, formatAngle, formatUnit, svgPointFromEvent, toRadians } from "./trigShared";
 import { FigureValueInputs, angleFromCosine, angleFromSine, roundTenth, wrapDegrees } from "./trigValueInputs";
 
 const VIEW_WIDTH = 480;
@@ -108,7 +111,7 @@ function QuarterTurnDrawing() {
 
             {/* Readouts beside the drawing. */}
             <g fontSize="12" textAnchor="end" style={{ fontVariantNumeric: "tabular-nums", ...EASE_150 }}>
-                <text x={VIEW_WIDTH - 24} y="56" fill={INK}>{`angle = ${formatAngle(angle)}`}</text>
+                <text x={VIEW_WIDTH - 24} y="56" fill={ANGLE_COLOR}>{`angle = ${formatAngle(angle)}`}</text>
                 <text x={VIEW_WIDTH - 24} y="84" fill={COS_COLOR} opacity={dim("guess")}>
                     {`your guess = ${formatUnit(guess)}`}
                 </text>
@@ -130,8 +133,8 @@ function QuarterTurnDrawing() {
                 <line x1={CENTER_X} y1={CENTER_Y - RADIUS - 16} x2={CENTER_X} y2={CENTER_Y + RADIUS + 16} stroke={INK_QUIET} strokeWidth="1.5" strokeLinecap="round" />
                 <circle cx={CENTER_X} cy={CENTER_Y} r={RADIUS} fill="none" stroke={INK_STRUCTURE} strokeWidth="1.5" />
                 <line x1={CENTER_X} y1={CENTER_Y} x2={tipX} y2={tipY} stroke={INK_STRUCTURE} strokeWidth="2" strokeLinecap="round" />
-                <path d={arcPath} fill="none" stroke={INK_STRUCTURE} strokeWidth="2" strokeLinecap="round" />
-                <text x={CENTER_X + Math.cos(labelRadians) * 48} y={CENTER_Y - Math.sin(labelRadians) * 48 + 4} fill={INK} fontSize="12" textAnchor="middle">
+                <path d={arcPath} fill="none" stroke={ANGLE_COLOR} strokeWidth="2" strokeLinecap="round" />
+                <text x={CENTER_X + Math.cos(labelRadians) * 48} y={CENTER_Y - Math.sin(labelRadians) * 48 + 4} fill={ANGLE_COLOR} fontSize="12" textAnchor="middle">
                     &#952;
                 </text>
             </g>
@@ -293,7 +296,7 @@ function QuarterTurnValueInputs() {
                 {
                     id: "turn-angle",
                     label: "angle",
-                    color: INK,
+                    color: ANGLE_COLOR,
                     display: formatAngle(angle),
                     onCommit: (value) => setVar("turnAngle", wrapDegrees(roundTenth(value))),
                 },
@@ -405,7 +408,13 @@ export const trigQuarterTurnBlocks: ReactElement[] = [
                 >
                     teal marker
                 </InlineLinkedHighlight>{" "}
-                to where you think cos 140° lands.
+                to where you think{" "}
+                <InlineFormula
+                    id="formula-quarter-turn-setup-cosine-target"
+                    latex="\clr{cosine}{\cos 140^\circ}"
+                    colorMap={{ cosine: "#62D0AD" }}
+                />{" "}
+                lands.
                 <br />• Lock in your prediction, then look.
             </EditableParagraph>
         </Block>
@@ -429,7 +438,11 @@ export const trigQuarterTurnBlocks: ReactElement[] = [
                     across value
                 </InlineLinkedHighlight>{" "}
                 drops below zero.
-                <br />• Cosine did not stop working at 90°, it simply changed sign.
+                <br />•{" "}
+                <InlineSpotColor id="spot-quarter-turn-insight-cosine" varName="cosineTerm" {...spotColorPropsFromDefinition(getVariableInfo("cosineTerm"))}>
+                    Cosine
+                </InlineSpotColor>{" "}
+                did not stop working at 90°, it simply changed sign.
                 <br />• Keep swinging and watch which quarter of the circle flips which
                 measurement.
             </EditableParagraph>
@@ -439,7 +452,10 @@ export const trigQuarterTurnBlocks: ReactElement[] = [
     <StackLayout key="layout-quarter-turn-question-cosine" maxWidth="xl">
         <Block id="quarter-turn-question-cosine" padding="sm">
             <EditableParagraph id="para-quarter-turn-question-cosine" blockId="quarter-turn-question-cosine">
-                At 200° the tip sits down and to the left of the base, so its cosine
+                At 200° the tip sits down and to the left of the base, so its{" "}
+                <InlineSpotColor id="spot-quarter-turn-question-cosine" varName="cosineTerm" {...spotColorPropsFromDefinition(getVariableInfo("cosineTerm"))}>
+                    cosine
+                </InlineSpotColor>{" "}
                 must be{" "}
                 <InlineFeedback
                     varName="answerTurnCosSign"
@@ -480,8 +496,10 @@ export const trigQuarterTurnBlocks: ReactElement[] = [
     <StackLayout key="layout-quarter-turn-question-sine" maxWidth="xl">
         <Block id="quarter-turn-question-sine" padding="sm">
             <EditableParagraph id="para-quarter-turn-question-sine" blockId="quarter-turn-question-sine">
-                At that same 200°, the tip also hangs below the base, which makes its
-                sine{" "}
+                At that same 200°, the tip also hangs below the base, which makes its{" "}
+                <InlineSpotColor id="spot-quarter-turn-question-sine" varName="sineTerm" {...spotColorPropsFromDefinition(getVariableInfo("sineTerm"))}>
+                    sine
+                </InlineSpotColor>{" "}
                 <InlineFeedback
                     varName="answerTurnSinSign"
                     correctValue="negative"

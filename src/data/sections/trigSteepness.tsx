@@ -14,8 +14,11 @@ import {
     EditableParagraph,
     InlineClozeInput,
     InlineFeedback,
+    InlineFormula,
     InlineLinkedHighlight,
     InlineScrubbleNumber,
+    InlineSpotColor,
+    InlineTrigger,
     InteractionHintSequence,
 } from "@/components/atoms";
 import { Figure, FigureSlider } from "@/components/molecules";
@@ -26,8 +29,9 @@ import {
     getVariableInfo,
     linkedHighlightPropsFromDefinition,
     numberPropsFromDefinition,
+    spotColorPropsFromDefinition,
 } from "../variables";
-import { COS_COLOR, EASE_150, Halo, INK, INK_QUIET, INK_STRUCTURE, SIN_COLOR, formatAngle, formatUnit, svgPointFromEvent, toRadians } from "./trigShared";
+import { ANGLE_COLOR, COS_COLOR, EASE_150, Halo, INK, INK_QUIET, INK_STRUCTURE, SIN_COLOR, TAN_COLOR, formatAngle, formatUnit, svgPointFromEvent, toRadians } from "./trigShared";
 import { FigureValueInputs, roundTenth } from "./trigValueInputs";
 
 const VIEW_WIDTH = 440;
@@ -93,10 +97,10 @@ function SteepnessDrawing() {
 
             {/* Readouts beside the drawing. */}
             <g fontSize="12" textAnchor="end" style={{ fontVariantNumeric: "tabular-nums", ...EASE_150 }}>
-                <text x={VIEW_WIDTH - 24} y="44" fill={INK}>{`angle = ${formatAngle(angle)}`}</text>
+                <text x={VIEW_WIDTH - 24} y="44" fill={ANGLE_COLOR}>{`angle = ${formatAngle(angle)}`}</text>
                 <text x={VIEW_WIDTH - 24} y="68" fill={SIN_COLOR} opacity={dim("rise")}>{`sin = ${formatUnit(sine)}`}</text>
                 <text x={VIEW_WIDTH - 24} y="92" fill={COS_COLOR} opacity={dim("run")}>{`cos = ${formatUnit(cosine)}`}</text>
-                <text x={VIEW_WIDTH - 24} y="124" fill={INK} opacity={dim("tan")}>
+                <text x={VIEW_WIDTH - 24} y="124" fill={TAN_COLOR} opacity={dim("tan")}>
                     {`sin ÷ cos = ${formatUnit(tangent)}`}
                 </text>
             </g>
@@ -108,8 +112,8 @@ function SteepnessDrawing() {
                 <path d={`M ${TOWER_X} ${ORIGIN_Y} A ${UNIT} ${UNIT} 0 0 0 ${ORIGIN_X} ${ORIGIN_Y - UNIT}`} fill="none" stroke={INK_STRUCTURE} strokeWidth="1.5" />
                 <line x1={TOWER_X} y1={ORIGIN_Y} x2={TOWER_X} y2={34} stroke={INK_QUIET} strokeWidth="1.5" strokeDasharray="4 5" />
                 <line x1={ORIGIN_X} y1={ORIGIN_Y} x2={TOWER_X} y2={towerY} stroke={INK_STRUCTURE} strokeWidth="2" strokeLinecap="round" />
-                <path d={arcPath} fill="none" stroke={INK_STRUCTURE} strokeWidth="2" strokeLinecap="round" />
-                <text x={ORIGIN_X + 46} y={ORIGIN_Y - 12} fill={INK} fontSize="12">&#952;</text>
+                <path d={arcPath} fill="none" stroke={ANGLE_COLOR} strokeWidth="2" strokeLinecap="round" />
+                <text x={ORIGIN_X + 46} y={ORIGIN_Y - 12} fill={ANGLE_COLOR} fontSize="12">&#952;</text>
                 <circle cx={tipX} cy={tipY} r="4" fill={INK_STRUCTURE} />
                 <text x={(ORIGIN_X + TOWER_X) / 2} y={ORIGIN_Y + 22} fill={INK} fontSize="11" textAnchor="middle">1</text>
             </g>
@@ -128,19 +132,19 @@ function SteepnessDrawing() {
                 <line x1={tipX} y1={ORIGIN_Y} x2={tipX} y2={tipY} stroke={SIN_COLOR} strokeWidth={weight("rise", 3)} strokeLinecap="round" />
             </g>
 
-            {/* The same rise, stretched out to the tower one unit away. */}
+            {/* The same rise, stretched out to the tower one unit away: tangent, in rose. */}
             <g {...hoverProps("tan")} opacity={dim("tan")} style={EASE_150}>
                 <Halo active={highlight === "tan"}>
-                    <line x1={TOWER_X} y1={ORIGIN_Y} x2={TOWER_X} y2={towerY} stroke={SIN_COLOR} strokeWidth={weight("tan", 3.5) + 6} strokeLinecap="round" />
+                    <line x1={TOWER_X} y1={ORIGIN_Y} x2={TOWER_X} y2={towerY} stroke={TAN_COLOR} strokeWidth={weight("tan", 3.5) + 6} strokeLinecap="round" />
                 </Halo>
-                <line x1={TOWER_X} y1={ORIGIN_Y} x2={TOWER_X} y2={towerY} stroke={SIN_COLOR} strokeWidth={weight("tan", 3.5)} strokeLinecap="round" />
-                <text x={TOWER_X + 14} y={(ORIGIN_Y + towerY) / 2 + 4} fill={SIN_COLOR} fontSize="12" style={{ fontVariantNumeric: "tabular-nums" }}>
+                <line x1={TOWER_X} y1={ORIGIN_Y} x2={TOWER_X} y2={towerY} stroke={TAN_COLOR} strokeWidth={weight("tan", 3.5)} strokeLinecap="round" />
+                <text x={TOWER_X + 14} y={(ORIGIN_Y + towerY) / 2 + 4} fill={TAN_COLOR} fontSize="12" style={{ fontVariantNumeric: "tabular-nums" }}>
                     {`tan = ${formatUnit(tangent)}`}
                 </text>
             </g>
 
             <g transform={`translate(${TOWER_X} ${towerY}) scale(${handleScale})`}>
-                <circle r="9" fill={SIN_COLOR} filter="url(#steepness-handle-shadow)" />
+                <circle r="9" fill={TAN_COLOR} filter="url(#steepness-handle-shadow)" />
                 <circle r="3.5" fill="#FFFFFF" />
             </g>
             <circle
@@ -183,7 +187,7 @@ function SteepnessValueInputs() {
                 {
                     id: "ramp-angle",
                     label: "angle",
-                    color: INK,
+                    color: ANGLE_COLOR,
                     display: formatAngle(angle),
                     onCommit: (value) => setAngle(value),
                 },
@@ -204,7 +208,7 @@ function SteepnessValueInputs() {
                 {
                     id: "ramp-tan",
                     label: "tan",
-                    color: SIN_COLOR,
+                    color: TAN_COLOR,
                     display: formatUnit(Math.tan(radians)),
                     onCommit: (value) => setAngle((Math.atan(Math.max(value, 0)) * 180) / Math.PI),
                 },
@@ -222,7 +226,7 @@ function SteepnessFigure() {
                 setVar("rampAngle", DEFAULT_ANGLE);
                 setVar("rampHighlight", "");
             }}
-            caption="Drag the indigo marker up and down the tower, or type an exact value. You are setting the steepness, and the ramp swings to match it."
+            caption="Drag the rose marker up and down the tower, or type an exact value. You are setting the steepness, and the ramp swings to match it."
         >
             <SteepnessDrawing />
             <SteepnessValueInputs />
@@ -276,8 +280,36 @@ export const trigSteepnessBlocks: ReactElement[] = [
                 >
                     steepness
                 </InlineLinkedHighlight>{" "}
-                is rise over run, which is sine divided by cosine.
-                <br />• Drag the indigo marker up the tower and the ramp swings to
+                is{" "}
+                <InlineLinkedHighlight
+                    id="highlight-steepness-setup-rise"
+                    varName="rampHighlight"
+                    highlightId="rise"
+                    color="#8E90F5"
+                    bgColor="rgba(142, 144, 245, 0.2)"
+                >
+                    rise
+                </InlineLinkedHighlight>{" "}
+                over{" "}
+                <InlineLinkedHighlight
+                    id="highlight-steepness-setup-run"
+                    varName="rampHighlight"
+                    highlightId="run"
+                    color="#62D0AD"
+                    bgColor="rgba(98, 208, 173, 0.2)"
+                >
+                    run
+                </InlineLinkedHighlight>
+                , which is{" "}
+                <InlineSpotColor id="spot-steepness-setup-sine" varName="sineTerm" {...spotColorPropsFromDefinition(getVariableInfo("sineTerm"))}>
+                    sine
+                </InlineSpotColor>{" "}
+                divided by{" "}
+                <InlineSpotColor id="spot-steepness-setup-cosine" varName="cosineTerm" {...spotColorPropsFromDefinition(getVariableInfo("cosineTerm"))}>
+                    cosine
+                </InlineSpotColor>
+                .
+                <br />• Drag the rose marker up the tower and the ramp swings to
                 whatever steepness you ask for.
             </EditableParagraph>
         </Block>
@@ -292,11 +324,20 @@ export const trigSteepnessBlocks: ReactElement[] = [
     <StackLayout key="layout-steepness-insight" maxWidth="xl">
         <Block id="steepness-insight" padding="sm">
             <EditableParagraph id="para-steepness-insight" blockId="steepness-insight">
-                • Pull the marker high and the ramp creeps toward straight up without
-                ever getting there.
-                <br />• The rise on the tower can grow forever while the cosine shrinks
-                toward zero.
-                <br />• Dividing by something tiny is exactly what makes the tangent
+                •{" "}
+                <InlineTrigger id="trigger-steepness-insight-marker-high" varName="rampAngle" value={63} icon="zap">
+                    Pull the marker high
+                </InlineTrigger>{" "}
+                and the ramp creeps toward straight up without ever getting there.
+                <br />• The rise on the tower can grow forever while the{" "}
+                <InlineSpotColor id="spot-steepness-insight-cosine" varName="cosineTerm" {...spotColorPropsFromDefinition(getVariableInfo("cosineTerm"))}>
+                    cosine
+                </InlineSpotColor>{" "}
+                shrinks toward zero.
+                <br />• Dividing by something tiny is exactly what makes the{" "}
+                <InlineSpotColor id="spot-steepness-insight-tangent" varName="tangentTerm" {...spotColorPropsFromDefinition(getVariableInfo("tangentTerm"))}>
+                    tangent
+                </InlineSpotColor>{" "}
                 explode.
             </EditableParagraph>
         </Block>
@@ -305,8 +346,23 @@ export const trigSteepnessBlocks: ReactElement[] = [
     <StackLayout key="layout-steepness-question-value" maxWidth="xl">
         <Block id="steepness-question-value" padding="sm">
             <EditableParagraph id="para-steepness-question-value" blockId="steepness-question-value">
-                Somewhere on the circle an angle has sin θ = 0.6 and cos θ = 0.8, so
-                its tangent is{" "}
+                Somewhere on the circle an angle has{" "}
+                <InlineFormula
+                    id="formula-steepness-question-value-sine"
+                    latex="\clr{sine}{\sin\theta} = 0.6"
+                    colorMap={{ sine: "#8E90F5" }}
+                />{" "}
+                and{" "}
+                <InlineFormula
+                    id="formula-steepness-question-value-cosine"
+                    latex="\clr{cosine}{\cos\theta} = 0.8"
+                    colorMap={{ cosine: "#62D0AD" }}
+                />
+                , so its{" "}
+                <InlineSpotColor id="spot-steepness-question-value-tangent" varName="tangentTerm" {...spotColorPropsFromDefinition(getVariableInfo("tangentTerm"))}>
+                    tangent
+                </InlineSpotColor>{" "}
+                is{" "}
                 <InlineFeedback
                     varName="answerTanValue"
                     correctValue={["0.75", ".75", "3/4"]}

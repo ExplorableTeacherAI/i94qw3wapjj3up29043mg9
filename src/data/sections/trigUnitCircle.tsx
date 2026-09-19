@@ -14,9 +14,11 @@ import {
     InlineClozeChoice,
     InlineClozeInput,
     InlineFeedback,
+    InlineFormula,
     InlineLinkedHighlight,
     InlineScrubbleNumber,
     InlineSpotColor,
+    InlineTrigger,
     InteractionHintSequence,
     RevealOnInteraction,
 } from "@/components/atoms";
@@ -31,7 +33,7 @@ import {
     numberPropsFromDefinition,
     spotColorPropsFromDefinition,
 } from "../variables";
-import { COS_COLOR, EASE_150, Halo, INK, INK_QUIET, INK_STRUCTURE, SIN_COLOR, formatAngle, formatUnit, svgPointFromEvent, toRadians } from "./trigShared";
+import { ANGLE_COLOR, COS_COLOR, EASE_150, Halo, INK, INK_QUIET, INK_STRUCTURE, SIN_COLOR, formatAngle, formatUnit, svgPointFromEvent, toRadians } from "./trigShared";
 import { FigureValueInputs, angleFromCosine, angleFromSine, roundTenth, wrapDegrees } from "./trigValueInputs";
 
 // ── View geometry (24px+ padding, nothing clipped at any angle) ──────────────
@@ -110,7 +112,7 @@ function CraneDrawing() {
 
             {/* Readouts sit beside the drawing, never over it. */}
             <g fontSize="12" textAnchor="end" style={{ fontVariantNumeric: "tabular-nums", ...EASE_150 }}>
-                <text x={VIEW_WIDTH - 24} y="56" fill={INK}>{`angle = ${formatAngle(angle)}`}</text>
+                <text x={VIEW_WIDTH - 24} y="56" fill={ANGLE_COLOR}>{`angle = ${formatAngle(angle)}`}</text>
                 <text x={VIEW_WIDTH - 24} y="84" fill={COS_COLOR} opacity={dim("run")}>
                     {`across = cos = ${formatUnit(cosine)}`}
                 </text>
@@ -132,8 +134,8 @@ function CraneDrawing() {
                 </g>
                 {/* The arm itself: structure weight, plus the swept angle. */}
                 <line x1={CENTER_X} y1={CENTER_Y} x2={tipX} y2={tipY} stroke={INK_STRUCTURE} strokeWidth="2" strokeLinecap="round" />
-                <path d={arcPath} fill="none" stroke={INK_STRUCTURE} strokeWidth="2" strokeLinecap="round" />
-                <text x={CENTER_X + Math.cos(labelRadians) * 50} y={CENTER_Y - Math.sin(labelRadians) * 50 + 4} fill={INK} fontSize="12" textAnchor="middle">
+                <path d={arcPath} fill="none" stroke={ANGLE_COLOR} strokeWidth="2" strokeLinecap="round" />
+                <text x={CENTER_X + Math.cos(labelRadians) * 50} y={CENTER_Y - Math.sin(labelRadians) * 50 + 4} fill={ANGLE_COLOR} fontSize="12" textAnchor="middle">
                     &#952;
                 </text>
             </g>
@@ -200,7 +202,7 @@ function CraneValueInputs() {
                 {
                     id: "crane-angle",
                     label: "angle",
-                    color: INK,
+                    color: ANGLE_COLOR,
                     display: formatAngle(angle),
                     onCommit: (value) => setVar("craneAngle", wrapDegrees(roundTenth(value))),
                 },
@@ -300,7 +302,11 @@ export const trigUnitCircleBlocks: ReactElement[] = [
                     climb upward
                 </InlineLinkedHighlight>{" "}
                 trade off against each other.
-                <br />• Neither of them ever passes 1.
+                <br />• Neither of them ever passes 1, even with the arm{" "}
+                <InlineTrigger id="trigger-unit-circle-setup-straight-up" varName="craneAngle" value={90} icon="zap">
+                    straight up at 90°
+                </InlineTrigger>
+                .
             </EditableParagraph>
         </Block>
     </StackLayout>,
@@ -323,7 +329,13 @@ export const trigUnitCircleBlocks: ReactElement[] = [
                     sine
                 </InlineSpotColor>{" "}
                 is the climb divided by 1.
-                <br />• So the tip is always parked at the point (cos, sin).
+                <br />• So the tip is always parked at the point{" "}
+                <InlineFormula
+                    id="formula-unit-circle-insight-tip-point"
+                    latex="(\clr{cosine}{\cos},\ \clr{sine}{\sin})"
+                    colorMap={{ cosine: "#62D0AD", sine: "#8E90F5" }}
+                />
+                .
                 <br />• The circle becomes a lookup table for every angle.
             </EditableParagraph>
         </Block>
